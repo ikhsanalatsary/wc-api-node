@@ -1,6 +1,8 @@
 'use strict';
 
-var request = require('request');
+var https = require('https');
+var querystring = require('querystring');
+var request = require('axios');
 var OAuth   = require('oauth-1.0a');
 var crypto  = require('crypto');
 var promise = require('bluebird');
@@ -158,40 +160,48 @@ WooCommerceAPI.prototype._request = function(method, endpoint, data, callback) {
   var params = {
     url: url,
     method: method,
-    encoding: this.encoding,
+    // encoding: this.encoding, // default in axios is 'utf8'
     timeout: this.timeout,
     headers: {
-      'User-Agent': 'WooCommerce API Client-Node.js/' + this.classVersion,
-      'Accept': 'application/json'
+      'user-agent': 'WooCommerce API Client-Node.js/' + this.classVersion,
+      'accept': 'application/json'
     }
   };
 
   if (this.isSsl) {
     if (this.queryStringAuth) {
-      params.qs = {
+      params.params = {
         consumer_key: this.consumerKey,
         consumer_secret: this.consumerSecret
       };
+      params.paramsSerializer = function(params) {
+        return querystring.stringify(params);
+      }
     } else {
       params.auth = {
-        user: this.consumerKey,
-        pass: this.consumerSecret
+        username: this.consumerKey,
+        password: this.consumerSecret
       };
     }
 
     if (!this.verifySsl) {
-      params.strictSSL = false;
+      params.httpsAgent = new https.Agent({
+        rejectUnauthorized: false
+      });
     }
   } else {
-    params.qs = this._getOAuth().authorize({
+    params.params = this._getOAuth().authorize({
       url: url,
       method: method
     });
+    params.paramsSerializer = function(params) {
+      return querystring.stringify(params);
+    }
   }
 
   if (data) {
-    params.headers['Content-Type'] = 'application/json;charset=utf-8';
-    params.body = JSON.stringify(data);
+    params.headers['content-type'] = 'application/json;charset=utf-8';
+    params.data = data
   }
 
   if (!callback) {

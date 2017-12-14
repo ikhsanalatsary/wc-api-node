@@ -12,10 +12,30 @@ var WooCommerce = new WooCommerceAPI({
   consumerSecret: 'cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' // Your API consumer secret (required)
 });
 
+// var WooCommerce = new WooCommerceAPI({
+//   url: 'https://wordpresyugo.000webhostapp.com',
+//   consumerKey: 'ck_5b58c63fceef8aaabcdb35e984f6eb74f712c9b4',
+//   consumerSecret: 'cs_5dfd2ad4ff3faeb25be9661108ca417ae93debb9',
+//   wpAPI: true,
+//   queryStringAuth: true,
+//   version: 'wc/v2'
+// });
+
 // GET example
-WooCommerce.get('customers', function(err, data, res) {
-  console.log(res);
-});
+
+WooCommerce.get('products').then(console.log).catch(console.log)
+
+// var data = {
+//   code: '2356',
+//   discount_type: 'fixed_cart',
+//   amount: '123',
+//   individual_use: true,
+//   exclude_sale_items: true,
+//   usage_limit: 1,
+//   description: 'Voucher',
+// };
+
+// WooCommerce.post('coupons', data).then(console.log).catch(console.log)
 
 // POST example
 // WooCommerce.post('products', {
@@ -24,20 +44,14 @@ WooCommerce.get('customers', function(err, data, res) {
 //     type: 'simple',
 //     regular_price: '21.99'
 //   }
-// }, function(err, data, res) {
-//   console.log(res);
-// });
+// }).then(console.log).catch(console.log)
 
 // PUT example
 // WooCommerce.put('orders/123', {
 //   order: {
 //     status: 'completed'
 //   }
-// }, function(err, data, res) {
-//   console.log(res);
-// });
+// }).then(console.log).catch(console.log)
 
 // Delete example
-// WooCommerce.delete('coupons/123', function(err, data, res) {
-//   console.log(res);
-// });
+// WooCommerce.delete('coupons/123').then(console.log).catch(console.log)
